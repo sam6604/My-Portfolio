@@ -3,6 +3,7 @@ import { IBM_Plex_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { profile } from "@/lib/data";
 import { MotionProvider } from "@/components/MotionProvider";
+import { SignalBackground } from "@/components/SignalBackground";
 
 const plexSans = IBM_Plex_Sans({
   subsets: ["latin"],
@@ -31,7 +32,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${plexSans.variable} ${jetbrainsMono.variable}`}>
       <body className="bg-bg font-sans text-fg antialiased">
-        <MotionProvider>{children}</MotionProvider>
+        <SignalBackground />
+        <div className="relative z-10">
+          <MotionProvider>{children}</MotionProvider>
+        </div>
       </body>
     </html>
   );

@@ -1,0 +1,81 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: theme("colors.paper");
+    color: theme("colors.ink");
+  }
+  ::selection {
+    background-color: theme("colors.accent");
+    color: theme("colors.paper");
+  }
+  :focus-visible {
+    outline: 2px solid theme("colors.accent");
+    outline-offset: 3px;
+  }
+}
+
+@layer utilities {
+  .balance {
+    text-wrap: balance;
+  }
+}
+
+.link-underline {
+  position: relative;
+  padding-bottom: 3px;
+  text-decoration: none;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1.5px;
+  background: theme("colors.accent");
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.link-underline:hover::after,
+.link-underline:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* Skills marquee ticker */
+.ticker-mask {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+}
+
+.ticker-track {
+  animation: ticker 28s linear infinite;
+}
+
+.ticker-mask:hover .ticker-track {
+  animation-play-state: paused;
+}
+
+@keyframes ticker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}

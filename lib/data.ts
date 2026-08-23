@@ -15,8 +15,14 @@ export type Project = {
   name: string;
   description: string;
   stack: string[];
+  /** Live/deployed URL, if this project is publicly reachable. */
+  demoUrl?: string;
+  /** Public GitHub (or other) repo URL, if the code is public. */
+  repoUrl?: string;
 };
 
+// Fill in demoUrl / repoUrl below as projects go live or repos go public —
+// a card only becomes clickable once one of those two is set.
 export const projects: Project[] = [
   {
     year: "2026",
@@ -121,6 +127,7 @@ export type Certification = {
   name: string;
   issuer: string;
   description: string;
+  type: "award" | "certification";
 };
 
 export const certifications: Certification[] = [
@@ -129,29 +136,34 @@ export const certifications: Certification[] = [
     issuer: "Vision AI Hackathon",
     description:
       "Developed an AI-powered system for intelligent multi-format timesheet processing and automated work-hour calculation.",
+    type: "award",
   },
   {
     name: "Software Engineer Certification",
     issuer: "HackerRank",
     description:
       "Cleared assessments in problem-solving, SQL, and REST APIs, demonstrating core software development skills.",
+    type: "certification",
   },
   {
     name: "Scientific Computing with Python",
     issuer: "freeCodeCamp",
     description:
       "300-hour certification covering Python fundamentals, algorithms, data processing, and automation scripting.",
+    type: "certification",
   },
   {
     name: "Introduction to Generative AI Studio",
     issuer: "Google Cloud · Simplilearn SkillUp",
     description: "LLM basics, prompt design, and hands-on use of AI generation tools.",
+    type: "certification",
   },
   {
     name: "Generative AI Mastermind",
     issuer: "Outskill",
     description:
       "LLM concepts, prompt engineering, and applied generative AI tools for automation and real-world use cases.",
+    type: "certification",
   },
 ];
 

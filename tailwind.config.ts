@@ -5,20 +5,20 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        paper: "#F7F5F1",
-        ink: "#1C1B18",
-        sub: "#5C584F",
-        hair: "#D6D2C6",
-        accent: "#3F6459",
-        "accent-soft": "#DCE5DF",
+        bg: "#101210",
+        raised: "#171a16",
+        fg: "#ECECE4",
+        muted: "#8D9086",
+        amber: "#FFB454",
+        teal: "#6BD4BD",
+        line: "#282B25",
       },
       fontFamily: {
-        serif: ["var(--font-newsreader)", "Georgia", "serif"],
-        sans: ["var(--font-archivo)", "system-ui", "sans-serif"],
+        sans: ["var(--font-plex-sans)", "system-ui", "sans-serif"],
         mono: ["var(--font-jetbrains)", "ui-monospace", "monospace"],
       },
       maxWidth: {
-        content: "1180px",
+        content: "960px",
       },
     },
   },

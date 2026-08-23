@@ -7,15 +7,15 @@
     scroll-behavior: smooth;
   }
   body {
-    background-color: theme("colors.paper");
-    color: theme("colors.ink");
+    background-color: theme("colors.bg");
+    color: theme("colors.fg");
   }
   ::selection {
-    background-color: theme("colors.accent");
-    color: theme("colors.paper");
+    background-color: theme("colors.amber");
+    color: theme("colors.bg");
   }
   :focus-visible {
-    outline: 2px solid theme("colors.accent");
+    outline: 2px solid theme("colors.teal");
     outline-offset: 3px;
   }
 }
@@ -26,26 +26,56 @@
   }
 }
 
-.link-underline {
-  position: relative;
-  padding-bottom: 3px;
-  text-decoration: none;
+/* Terminal window */
+.term-glow {
+  background: radial-gradient(ellipse at 50% 20%, rgba(255, 180, 84, 0.06), transparent 60%);
 }
-.link-underline::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 1.5px;
-  background: theme("colors.accent");
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+
+.scanline {
+  background: linear-gradient(to bottom, transparent, rgba(255, 180, 84, 0.05), transparent);
+  animation: scan 7s linear infinite;
+  will-change: transform;
 }
-.link-underline:hover::after,
-.link-underline:focus-visible::after {
-  transform: scaleX(1);
+@keyframes scan {
+  0% {
+    transform: translateY(-140px);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.cursor-blink {
+  animation: blink 1s steps(1) infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.pulse-dot {
+  animation: pulse-dot 2.4s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%,
+  100% {
+    box-shadow: 0 0 0 3px rgba(107, 212, 189, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(107, 212, 189, 0.05);
+  }
 }
 
 /* Skills marquee ticker */
@@ -53,15 +83,12 @@
   -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
   mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
 }
-
 .ticker-track {
   animation: ticker 28s linear infinite;
 }
-
 .ticker-mask:hover .ticker-track {
   animation-play-state: paused;
 }
-
 @keyframes ticker {
   from {
     transform: translateX(0);
@@ -72,8 +99,14 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ticker-track {
+  .ticker-track,
+  .scanline,
+  .cursor-blink,
+  .pulse-dot,
+  [class*="animate-[fadeUp"] {
     animation: none;
+    opacity: 1;
+    transform: none;
   }
   html {
     scroll-behavior: auto;

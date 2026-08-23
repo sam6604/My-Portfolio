@@ -1,16 +1,12 @@
 import { Reveal } from "@/components/Reveal";
-import { RevealTitle } from "@/components/RevealTitle";
 import { projects } from "@/lib/data";
 
 export function ProjectIndex() {
   return (
-    <section className="border-t border-hair py-16">
-      <div className="mb-8 flex items-baseline justify-between gap-4">
-        <RevealTitle className="font-serif text-[clamp(1.5rem,3vw,2rem)] font-medium italic">
-          Selected work
-        </RevealTitle>
-        <span className="font-mono text-xs text-sub">{projects.length} projects</span>
-      </div>
+    <section className="border-t border-line py-14">
+      <span className="mb-6 block font-mono text-xs uppercase tracking-[0.1em] text-teal">
+        {"// projects"}
+      </span>
 
       <ul>
         {projects.map((project, i) => (
@@ -18,19 +14,14 @@ export function ProjectIndex() {
             as="li"
             key={project.name}
             delay={i * 0.05}
-            className="group relative grid grid-cols-[56px_1fr] items-baseline gap-5 border-t border-hair py-6 transition-[padding-left] duration-200 ease-out hover:pl-3.5 sm:grid-cols-[76px_1fr_auto]"
+            className="group flex flex-col justify-between gap-2 border-b border-line py-4 pl-0 transition-[padding] duration-150 ease-out hover:bg-raised hover:pl-4 sm:flex-row sm:items-baseline sm:gap-4"
           >
-            <span
-              aria-hidden
-              className="absolute -left-3.5 top-0 h-full w-[3px] origin-top scale-y-0 bg-accent transition-transform duration-300 ease-out group-hover:scale-y-100"
-            />
-            <span className="pt-1 font-mono text-xs text-sub">{project.year}</span>
             <div>
-              <h3 className="font-sans text-lg font-semibold">{project.name}</h3>
-              <p className="mt-1 max-w-[52ch] font-sans text-[13.5px] text-sub">{project.description}</p>
+              <h3 className="font-sans text-[15.5px] font-medium text-fg">{project.name}</h3>
+              <p className="mt-1 max-w-[60ch] font-sans text-[13px] text-muted">{project.description}</p>
             </div>
-            <p className="col-span-2 whitespace-normal font-mono text-[11px] text-accent sm:col-span-1 sm:whitespace-nowrap sm:text-right">
-              {project.stack.join(", ")}
+            <p className="whitespace-normal font-mono text-[11.5px] text-amber sm:whitespace-nowrap sm:text-right">
+              {project.stack.join(" · ")}
             </p>
           </Reveal>
         ))}

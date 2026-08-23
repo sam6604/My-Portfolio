@@ -1,100 +1,107 @@
 "use client";
 
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import type { MouseEvent } from "react";
+import { useEffect, useRef, useState } from "react";
 import { profile } from "@/lib/data";
 
-function ParallaxWord({
-  children,
-  depth,
-  mx,
-  my,
-  className,
-}: {
-  children: React.ReactNode;
-  depth: number;
-  mx: ReturnType<typeof useMotionValue<number>>;
-  my: ReturnType<typeof useMotionValue<number>>;
-  className?: string;
-}) {
-  const x = useTransform(mx, (v) => v * depth * 14);
-  const y = useTransform(my, (v) => v * depth * 10);
-  const springX = useSpring(x, { stiffness: 150, damping: 20, mass: 0.4 });
-  const springY = useSpring(y, { stiffness: 150, damping: 20, mass: 0.4 });
-
-  return (
-    <motion.span className={`block ${className ?? ""}`} style={{ x: springX, y: springY }}>
-      {children}
-    </motion.span>
-  );
-}
+type Stage = "boot" | "whoami" | "identity" | "done";
 
 export function Hero() {
-  const mx = useMotionValue(0);
-  const my = useMotionValue(0);
+  const [stage, setStage] = useState<Stage>("boot");
+  const [typed, setTyped] = useState("");
+  const [uptime, setUptime] = useState(0);
+  const startRef = useRef<number>(0);
+  const reducedRef = useRef(false);
 
-  function handleMouseMove(e: MouseEvent<HTMLDivElement>) {
-    const rect = e.currentTarget.getBoundingClientRect();
-    mx.set((e.clientX - rect.left) / rect.width - 0.5);
-    my.set((e.clientY - rect.top) / rect.height - 0.5);
-  }
+  useEffect(() => {
+    reducedRef.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  function handleMouseLeave() {
-    mx.set(0);
-    my.set(0);
-  }
+    if (reducedRef.current) {
+      setTyped("$ whoami");
+      setStage("done");
+    } else {
+      let i = 0;
+      const line = "$ whoami";
+      const interval = setInterval(() => {
+        i++;
+        setTyped(line.slice(0, i));
+        if (i >= line.length) {
+          clearInterval(interval);
+          setTimeout(() => setStage("identity"), 350);
+        }
+      }, 32);
+      return () => clearInterval(interval);
+    }
+  }, []);
+
+  useEffect(() => {
+    startRef.current = Date.now();
+    const tick = () => setUptime(Math.floor((Date.now() - startRef.current) / 1000));
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const showIdentity = stage === "identity" || stage === "done";
 
   return (
-    <div
-      className="grid min-h-[92vh] content-center pt-24 pb-16"
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-    >
-      <motion.p
-        className="relative mb-5 inline-block w-fit font-mono text-xs uppercase tracking-[0.14em] text-accent"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.4 }}
-      >
-        Portfolio — 2026
-        <motion.span
-          className="absolute -bottom-1.5 left-0 h-px bg-accent"
-          initial={{ width: 0 }}
-          animate={{ width: "100%" }}
-          transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-        />
-      </motion.p>
+    <div className="term-glow relative min-h-[88vh] pt-16 pb-16">
+      <div aria-hidden className="scanline pointer-events-none absolute left-0 right-0 top-0 h-36" />
 
-      <h1 className="balance mb-4 font-serif text-[clamp(3.2rem,10vw,8.25rem)] font-medium leading-[0.94] tracking-tight">
-        <ParallaxWord depth={0.4} mx={mx} my={my}>
-          Sai
-        </ParallaxWord>
-        <ParallaxWord depth={0.8} mx={mx} my={my}>
-          Samanvith <em className="font-normal italic text-accent">S.</em>
-        </ParallaxWord>
-      </h1>
+      <div className="rounded-lg border border-line bg-raised shadow-[0_30px_80px_-30px_rgba(0,0,0,0.7)]">
+        <div className="flex items-center gap-2 border-b border-line bg-[#14160f] px-4 py-2.5">
+          <span className="h-2.5 w-2.5 rounded-full bg-[#3a3d34]" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#3a3d34]" />
+          <span className="h-2.5 w-2.5 rounded-full bg-[#3a3d34]" />
+          <span className="ml-2 font-mono text-xs text-muted">sai@portfolio ~ %</span>
+          <span className="ml-auto font-mono text-xs tabular-nums text-muted">
+            uptime <span className="text-teal">{uptime}s</span>
+          </span>
+        </div>
 
-      <div className="flex max-w-[760px] flex-wrap items-baseline gap-3.5 border-t border-hair pt-4 font-sans text-base text-sub sm:text-xl">
-        <strong className="font-semibold text-ink">{profile.role}</strong>
-        <span>— {profile.tagline}</span>
+        <div className="min-h-[280px] px-6 py-8 font-mono text-sm leading-loose sm:px-10 sm:py-10">
+          <div>
+            <span className="text-teal">{typed}</span>
+            {stage === "boot" && <span className="cursor-blink ml-0.5 inline-block h-[1.1em] w-[9px] translate-y-[2px] bg-amber align-text-bottom" />}
+          </div>
+
+          {showIdentity && (
+            <div className="mt-2 animate-[fadeUp_0.5s_ease_forwards]">
+              <h1 className="balance mb-1 font-sans text-[clamp(1.9rem,5.5vw,3.4rem)] font-semibold leading-tight tracking-tight text-fg">
+                {profile.name}
+              </h1>
+              <p className="font-mono text-sm text-amber sm:text-base">
+                {profile.role} — {profile.tagline}
+              </p>
+              <p className="mt-4 max-w-[60ch] font-sans text-sm text-muted">{profile.bio}</p>
+
+              <div className="mt-5 flex flex-wrap gap-5">
+                <a
+                  href={`mailto:${profile.email}`}
+                  className="border-b border-transparent font-mono text-[13px] text-muted transition-colors hover:border-teal hover:text-teal"
+                >
+                  {profile.email}
+                </a>
+                <a
+                  href={profile.github}
+                  className="border-b border-transparent font-mono text-[13px] text-muted transition-colors hover:border-teal hover:text-teal"
+                >
+                  {profile.githubLabel}
+                </a>
+                <a
+                  href={profile.linkedin}
+                  className="border-b border-transparent font-mono text-[13px] text-muted transition-colors hover:border-teal hover:text-teal"
+                >
+                  {profile.linkedinLabel}
+                </a>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
-      <p className="mt-5 max-w-[56ch] font-sans text-[15.5px] leading-[1.7] text-sub">{profile.bio}</p>
-
-      <div className="mt-7 flex flex-wrap gap-6">
-        <a
-          href={`mailto:${profile.email}`}
-          className="link-underline font-sans text-sm font-semibold text-ink"
-        >
-          {profile.email}
-        </a>
-        <a href={profile.github} className="link-underline font-sans text-sm font-semibold text-ink">
-          GitHub
-        </a>
-        <a href={profile.linkedin} className="link-underline font-sans text-sm font-semibold text-ink">
-          LinkedIn
-        </a>
-      </div>
+      <p className="mt-9 text-center font-mono text-[11px] tracking-[0.08em] text-muted">
+        scroll ↓ to view work
+      </p>
     </div>
   );
 }

@@ -1,21 +1,13 @@
 import type { Metadata } from "next";
-import { Newsreader, Archivo, JetBrains_Mono } from "next/font/google";
+import { IBM_Plex_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { profile } from "@/lib/data";
 import { MotionProvider } from "@/components/MotionProvider";
 
-const newsreader = Newsreader({
+const plexSans = IBM_Plex_Sans({
   subsets: ["latin"],
-  variable: "--font-newsreader",
-  style: ["normal", "italic"],
-  weight: ["400", "500"],
-  display: "swap",
-});
-
-const archivo = Archivo({
-  subsets: ["latin"],
-  variable: "--font-archivo",
-  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-plex-sans",
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -37,8 +29,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${newsreader.variable} ${archivo.variable} ${jetbrainsMono.variable}`}>
-      <body className="font-sans antialiased">
+    <html lang="en" className={`${plexSans.variable} ${jetbrainsMono.variable}`}>
+      <body className="bg-bg font-sans text-fg antialiased">
         <MotionProvider>{children}</MotionProvider>
       </body>
     </html>
